@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import base64
 import json
 import sys
@@ -5,12 +6,16 @@ import os
 
 def base64_to_json(base64_string):
     try:
+        # Decode base64 string
         decoded_bytes = base64.b64decode(base64_string)
         
+        # Convert decoded bytes to JSON
         json_data = json.loads(decoded_bytes.decode('utf-8'))
         
+        # Ensure output directory exists
         os.makedirs('output', exist_ok=True)
         
+        # Write JSON to file
         output_path = os.path.join('output', 'decoded_output.json')
         with open(output_path, 'w') as f:
             json.dump(json_data, f, indent=4)

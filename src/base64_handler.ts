@@ -1,7 +1,12 @@
-import { spawn } from 'child_process';
-import * as path from 'path';
-import * as fs from 'fs';
-import * as readline from 'readline';
+import { spawn } from 'node:child_process';
+import * as path from 'node:path';
+import * as fs from 'node:fs/promises';
+import * as readline from 'node:readline';
+import { fileURLToPath } from 'node:url';
+
+// Equivalent to __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export class Base64Converter {
     private pythonScriptPath: string;
@@ -25,11 +30,11 @@ export class Base64Converter {
                 errorOutput += data.toString();
             });
 
-            pythonProcess.on('close', (code) => {
+            pythonProcess.on('close', async (code) => {
                 if (code === 0) {
                     const outputPath = path.join('output', 'decoded_output.json');
                     try {
-                        const jsonContent = fs.readFileSync(outputPath, 'utf-8');
+                        const jsonContent = await fs.readFile(outputPath, 'utf-8');
                         resolve(jsonContent);
                     } catch (readError) {
                         reject(new Error(`Failed to read output file: ${readError}`));
@@ -50,7 +55,7 @@ export class Base64Converter {
         return new Promise((resolve) => {
             rl.question('Enter base64 encoded string: ', (base64String) => {
                 rl.close();
-                resolve(base64String);
+                resolve(base64String.trim());
             });
         });
     }
@@ -70,6 +75,6 @@ export class Base64Converter {
 }
 
 // Run test if script is executed directly
-if (require.main === module) {
+if (import.meta.url === `file://${__filename}`) {
     Base64Converter.runTest();
 }

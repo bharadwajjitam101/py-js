@@ -1,5 +1,9 @@
 {
-    "name": "John Doe",
-    "age": 30,
-    "email": "john.doe@example.com"
+    "person": {
+        "name": "John Doe",
+        "age": 30,
+        "contact": {
+            "email": "john.doe@example.com"
+        }
+    }
 }
